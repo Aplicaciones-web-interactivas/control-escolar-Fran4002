@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Materia;
+use App\Models\Horario;
+use App\Models\Grupo;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -50,5 +53,125 @@ class AdminController extends Controller
     public function deleteMateria(Materia $materia) {
         $materia->delete();
         return redirect()->route('index.materias')->with('success', 'Materia eliminada correctamente');
+    }
+
+    public function indexHorarios()
+    {
+        $horarios = Horario::with(['maestro', 'materia'])->get();
+        $maestros = User::where('role', 'maestro')->get();
+        $materias = Materia::all();
+
+        return view('admin.horarios', compact('horarios', 'maestros', 'materias'));
+    }
+
+    public function createHorario(Request $request)
+    {
+        $request->validate([
+            'maestro_id'   => 'required|exists:users,id',
+            'materia_id'   => 'required|exists:materias,id',
+            'dias'         => 'required|string|max:255',
+            'hora_inicio'  => 'required|date_format:H:i',
+            'hora_fin'     => 'required|date_format:H:i|after:hora_inicio',
+        ]);
+
+        Horario::create($request->only([
+            'maestro_id',
+            'materia_id',
+            'dias',
+            'hora_inicio',
+            'hora_fin',
+        ]));
+
+        return redirect()->route('index.horarios')->with('success', 'Horario creado correctamente');
+    }
+
+    public function editHorario(Horario $horario)
+    {
+        $maestros = User::where('role', 'maestro')->get();
+        $materias = Materia::all();
+
+        return view('admin.horarios_edit', compact('horario', 'maestros', 'materias'));
+    }
+
+    public function updateHorario(Request $request, Horario $horario)
+    {
+        $request->validate([
+            'maestro_id'   => 'required|exists:users,id',
+            'materia_id'   => 'required|exists:materias,id',
+            'dias'         => 'required|string|max:255',
+            'hora_inicio'  => 'required|date_format:H:i',
+            'hora_fin'     => 'required|date_format:H:i|after:hora_inicio',
+        ]);
+
+        $horario->update($request->only([
+            'maestro_id',
+            'materia_id',
+            'dias',
+            'hora_inicio',
+            'hora_fin',
+        ]));
+
+        return redirect()->route('index.horarios')->with('success', 'Horario actualizado correctamente');
+    }
+
+    public function deleteHorario(Horario $horario)
+    {
+        $horario->delete();
+
+        return redirect()->route('index.horarios')->with('success', 'Horario eliminado correctamente');
+    }
+
+    public function indexGrupos()
+    {
+        $grupos = Grupo::with(['alumno', 'horario.materia', 'horario.maestro'])->get();
+        $alumnos = User::where('role', 'alumno')->get();
+        $horarios = Horario::with(['materia', 'maestro'])->get();
+
+        return view('admin.grupos', compact('grupos', 'alumnos', 'horarios'));
+    }
+
+    public function createGrupo(Request $request)
+    {
+        $request->validate([
+            'alumno_id'  => 'required|exists:users,id',
+            'horario_id' => 'required|exists:horarios,id',
+        ]);
+
+        Grupo::create($request->only([
+            'alumno_id',
+            'horario_id',
+        ]));
+
+        return redirect()->route('index.grupos')->with('success', 'Grupo creado correctamente');
+    }
+
+    public function editGrupo(Grupo $grupo)
+    {
+        $alumnos = User::where('role', 'alumno')->get();
+        $horarios = Horario::with(['materia', 'maestro'])->get();
+
+        return view('admin.grupos_edit', compact('grupo', 'alumnos', 'horarios'));
+    }
+
+    public function updateGrupo(Request $request, Grupo $grupo)
+    {
+        $request->validate([
+            'alumno_id'  => 'required|exists:users,id',
+            'horario_id' => 'required|exists:horarios,id',
+        ]);
+
+        $grupo->update($request->only([
+            'alumno_id',
+            'horario_id',
+        ]));
+
+        return redirect()->route('index.grupos')->with('success', 'Grupo actualizado correctamente');
+    }
+
+    public function deleteGrupo(Grupo $grupo)
+    {
+        $grupo->delete();
+
+        return redirect()->route('index.grupos')->with('success', 'Grupo eliminado correctamente');
     }
 }
