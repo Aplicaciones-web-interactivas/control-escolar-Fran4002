@@ -17,8 +17,20 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 route::get('/dashboard', [AdminController::class, 'indexAdmin'])->middleware('auth')->name('index.dashboard');
 
-route::get('/materias', [AdminController::class, 'indexMaterias'])->name('index.materias');
-route::post('/materias', [AdminController::class, 'createMateria'])->name('create.materias');
-route::get('/materias/{materia}/edit', [AdminController::class, 'editMateria'])->name('edit.materias');
-route::put('/materias/{materia}', [AdminController::class, 'updateMateria'])->name('update.materias');
-route::delete('/materias/{materia}', [AdminController::class, 'deleteMateria'])->name('delete.materias');
+Route::get('/materias', [AdminController::class, 'indexMaterias'])->name('index.materias');
+Route::post('/materias', [AdminController::class, 'createMateria'])->name('create.materias');
+Route::get('/materias/{materia}/edit', [AdminController::class, 'editMateria'])->name('edit.materias');
+Route::put('/materias/{materia}', [AdminController::class, 'updateMateria'])->name('update.materias');
+Route::delete('/materias/{materia}', [AdminController::class, 'deleteMateria'])->name('delete.materias');
+
+Route::get('/horarios', [AdminController::class, 'indexHorarios'])->name('index.horarios');
+Route::post('/horarios', [AdminController::class, 'createHorario'])->name('create.horarios');
+Route::get('/horarios/{horario}/edit', [AdminController::class, 'editHorario'])->name('edit.horarios');
+Route::put('/horarios/{horario}', [AdminController::class, 'updateHorario'])->name('update.horarios');
+Route::delete('/horarios/{horario}', [AdminController::class, 'deleteHorario'])->name('delete.horarios');
+
+Route::get('/grupos', [AdminController::class, 'indexGrupos'])->name('index.grupos');
+Route::post('/grupos', [AdminController::class, 'createGrupo'])->name('create.grupos');
+Route::get('/grupos/{grupo}/edit', [AdminController::class, 'editGrupo'])->name('edit.grupos');
+Route::put('/grupos/{grupo}', [AdminController::class, 'updateGrupo'])->name('update.grupos');
+Route::delete('/grupos/{grupo}', [AdminController::class, 'deleteGrupo'])->name('delete.grupos');
