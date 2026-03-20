@@ -11,7 +11,28 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     public function indexAdmin() {
+        abort_if(auth()->user()->role !== 'admin', 403);
         return view('admin.dashboard');
+    }
+
+    public function indexUsers()
+    {
+        // Roles that an admin can assign from the users screen.
+        $roles = ['admin', 'alumno', 'maestro'];
+        $users = User::all();
+
+        return view('admin.users', compact('users', 'roles'));
+    }
+
+    public function updateUserRole(Request $request, User $user)
+    {
+        $request->validate([
+            'role' => 'required|in:admin,alumno,maestro',
+        ]);
+
+        $user->update(['role' => $request->role]);
+
+        return redirect()->route('index.users')->with('success', 'Rol de usuario actualizado correctamente');
     }
 
     public function indexMaterias() {
