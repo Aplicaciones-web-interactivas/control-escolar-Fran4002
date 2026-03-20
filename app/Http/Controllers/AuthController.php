@@ -23,7 +23,16 @@ class AuthController extends Controller
 
         if (Auth::attempt(['clave_institucional' => $request->clave_institucional, 'password' => $request->password, 'is_active' => true])) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            $user = Auth::user();
+
+            $routeName = match ($user->role) {
+                'admin' => 'index.dashboard',
+                'alumno' => 'alumnos.index',
+                'maestro' => 'maestros.index',
+                default => 'index.dashboard',
+            };
+
+            return redirect()->route($routeName);
         }
 
         return back()->withErrors([
@@ -48,7 +57,8 @@ class AuthController extends Controller
             'name' => $request->name,
             'clave_institucional' => $request->clave_institucional,
             'password' => Hash::make($request->password),
-            'role' => 'user',
+            // Registration accounts are created as students by default.
+            'role' => 'alumno',
         ]);
 
         return redirect('/login')->with('success', 'Account created successfully. Please log in.');

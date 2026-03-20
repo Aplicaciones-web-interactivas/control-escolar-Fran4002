@@ -47,6 +47,14 @@
                             </div>
                         </div>
                     </form>
+
+                    <div class="row mb-0">
+                        <div class="col-md-8 offset-md-4">
+                            <p class="text-sm text-gray-500">Credenciales de prueba:</p>
+                            <p class="text-sm text-gray-500">Clave Institucional: 00000</p>
+                            <p class="text-sm text-gray-500">Password: admin</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -18,6 +18,16 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 route::get('/dashboard', [AdminController::class, 'indexAdmin'])->middleware('auth')->name('index.dashboard');
 
+Route::get('/alumnos', function () {
+    abort_if(auth()->user()->role !== 'alumno', 403);
+    return view('alumnos');
+})->middleware('auth')->name('alumnos.index');
+
+Route::get('/maestros', function () {
+    abort_if(auth()->user()->role !== 'maestro', 403);
+    return view('maestros');
+})->middleware('auth')->name('maestros.index');
+
 Route::get('/usuarios', [AdminController::class, 'indexUsers'])->middleware('auth')->name('index.users');
 Route::put('/usuarios/{user}/role', [AdminController::class, 'updateUserRole'])->middleware('auth')->name('update.users.role');
 
