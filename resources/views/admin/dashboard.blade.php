@@ -50,6 +50,20 @@
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Usuario</h5>
+                    <p class="card-text flex-grow-1">
+                        Gestiona los roles de usuarios (administrador, maestro, alumno, usuario).
+                    </p>
+                    <a href="{{ route('index.users') }}" class="btn btn-primary mt-auto">
+                        Ver usuarios
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title">Calificaciones</h5>
                     <p class="card-text flex-grow-1">
                         Registra y administra calificaciones de los alumnos.

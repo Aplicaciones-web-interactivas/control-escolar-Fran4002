@@ -18,6 +18,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 route::get('/dashboard', [AdminController::class, 'indexAdmin'])->middleware('auth')->name('index.dashboard');
 
+Route::get('/usuarios', [AdminController::class, 'indexUsers'])->middleware('auth')->name('index.users');
+Route::put('/usuarios/{user}/role', [AdminController::class, 'updateUserRole'])->middleware('auth')->name('update.users.role');
+
 Route::get('/materias', [AdminController::class, 'indexMaterias'])->name('index.materias');
 Route::post('/materias', [AdminController::class, 'createMateria'])->name('create.materias');
 Route::get('/materias/{materia}/edit', [AdminController::class, 'editMateria'])->name('edit.materias');
