@@ -28,5 +28,9 @@ class DatabaseSeeder extends Seeder
         // Seed alumnos.
         $this->call(AlumnoSeeder::class);
         $this->call(MaestroSeeder::class);
+        $this->call(MateriaSeeder::class);
+        $this->call(HorarioSeeder::class);
+        $this->call(GrupoSeeder::class);
+        $this->call(CalificacionSeeder::class);
     }
 }
