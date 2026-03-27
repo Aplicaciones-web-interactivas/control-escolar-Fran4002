@@ -19,7 +19,7 @@ class AdminController extends Controller
     {
         // Roles that an admin can assign from the users screen.
         $roles = ['admin', 'alumno', 'maestro'];
-        $users = User::all();
+        $users = User::latest('id')->paginate(10);
 
         return view('admin.users', compact('users', 'roles'));
     }
@@ -36,7 +36,7 @@ class AdminController extends Controller
     }
 
     public function indexMaterias() {
-        $materias = Materia::all();
+        $materias = Materia::latest('id')->paginate(10);
         return view('admin.materias')->with('materias', $materias);
     }
 
@@ -78,7 +78,7 @@ class AdminController extends Controller
 
     public function indexHorarios()
     {
-        $horarios = Horario::with(['maestro', 'materia'])->get();
+        $horarios = Horario::with(['maestro', 'materia'])->latest('id')->paginate(10);
         $maestros = User::where('role', 'maestro')->get();
         $materias = Materia::all();
 
@@ -144,7 +144,7 @@ class AdminController extends Controller
 
     public function indexGrupos()
     {
-        $grupos = Grupo::with(['alumno', 'horario.materia', 'horario.maestro'])->get();
+        $grupos = Grupo::with(['alumno', 'horario.materia', 'horario.maestro'])->latest('id')->paginate(10);
         $alumnos = User::where('role', 'alumno')->get();
         $horarios = Horario::with(['materia', 'maestro'])->get();
 

@@ -11,7 +11,7 @@ class CalificacionController extends Controller
 {
     public function index()
     {
-        $calificaciones = Calificacion::with(['alumno', 'materia'])->get();
+        $calificaciones = Calificacion::with(['alumno', 'materia'])->latest('id')->paginate(10);
         $alumnos = User::where('role', 'alumno')->get();
         $materias = Materia::all();
 
