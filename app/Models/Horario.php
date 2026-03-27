@@ -28,4 +28,9 @@ class Horario extends Model
     {
         return $this->hasMany(Grupo::class);
     }
+
+    public function tareas()
+    {
+        return $this->hasMany(Tarea::class);
+    }
 }

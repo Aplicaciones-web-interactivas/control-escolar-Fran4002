@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalificacionController;
+use App\Http\Controllers\TareaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,15 +19,17 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 route::get('/dashboard', [AdminController::class, 'indexAdmin'])->middleware('auth')->name('index.dashboard');
 
-Route::get('/alumnos', function () {
-    abort_if(auth()->user()->role !== 'alumno', 403);
-    return view('alumnos');
-})->middleware('auth')->name('alumnos.index');
+Route::get('/alumnos', [TareaController::class, 'indexAlumno'])->middleware('auth')->name('alumnos.index');
+Route::post('/alumnos/tareas/{tarea}/entrega', [TareaController::class, 'storeEntrega'])->middleware('auth')->name('alumnos.tareas.entrega');
 
-Route::get('/maestros', function () {
-    abort_if(auth()->user()->role !== 'maestro', 403);
-    return view('maestros');
-})->middleware('auth')->name('maestros.index');
+Route::get('/maestros', [TareaController::class, 'indexMaestro'])->middleware('auth')->name('maestros.index');
+Route::post('/maestros/tareas', [TareaController::class, 'storeTarea'])->middleware('auth')->name('create.tareas');
+Route::get('/maestros/tareas/{tarea}/edit', [TareaController::class, 'editTarea'])->middleware('auth')->name('edit.tareas');
+Route::put('/maestros/tareas/{tarea}', [TareaController::class, 'updateTarea'])->middleware('auth')->name('update.tareas');
+Route::delete('/maestros/tareas/{tarea}', [TareaController::class, 'destroyTarea'])->middleware('auth')->name('delete.tareas');
+Route::get('/maestros/tareas/{tarea}/entregas', [TareaController::class, 'showEntregasMaestro'])->middleware('auth')->name('maestros.tareas.entregas');
+Route::post('/maestros/tareas/{tarea}/entregas/{entrega}/revisar', [TareaController::class, 'marcarRevisada'])->middleware('auth')->name('maestros.tareas.entregas.revisar');
+Route::get('/entregas/{entrega}/archivo', [TareaController::class, 'downloadEntrega'])->middleware('auth')->name('entregas.archivo');
 
 Route::get('/usuarios', [AdminController::class, 'indexUsers'])->middleware('auth')->name('index.users');
 Route::put('/usuarios/{user}/role', [AdminController::class, 'updateUserRole'])->middleware('auth')->name('update.users.role');

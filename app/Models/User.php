@@ -35,4 +35,24 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function horariosMaestro()
+    {
+        return $this->hasMany(Horario::class, 'maestro_id');
+    }
+
+    public function gruposAlumno()
+    {
+        return $this->hasMany(Grupo::class, 'alumno_id');
+    }
+
+    public function tareasMaestro()
+    {
+        return $this->hasMany(Tarea::class, 'maestro_id');
+    }
+
+    public function entregasTareasAlumno()
+    {
+        return $this->hasMany(EntregaTarea::class, 'alumno_id');
+    }
+
 }
