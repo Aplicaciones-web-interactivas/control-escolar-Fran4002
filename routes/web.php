@@ -46,6 +46,7 @@ Route::delete('/horarios/{horario}', [AdminController::class, 'deleteHorario'])-
 Route::get('/grupos', [AdminController::class, 'indexGrupos'])->name('index.grupos');
 Route::post('/grupos', [AdminController::class, 'createGrupo'])->name('create.grupos');
 Route::get('/grupos/{grupo}/edit', [AdminController::class, 'editGrupo'])->name('edit.grupos');
+Route::post('/grupos/{grupo}/alumnos', [AdminController::class, 'addAlumnoToGrupo'])->name('store.grupos.alumnos');
 Route::put('/grupos/{grupo}', [AdminController::class, 'updateGrupo'])->name('update.grupos');
 Route::delete('/grupos/{grupo}', [AdminController::class, 'deleteGrupo'])->name('delete.grupos');
 

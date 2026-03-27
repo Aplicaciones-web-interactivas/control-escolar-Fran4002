@@ -9,10 +9,6 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="card mb-4 p-3">
-        <p>En esta pantalla puedes revisar todos los usuarios y cambiar su rol.</p>
-    </div>
-
     <div class="table-responsive">
     <table class="table table-bordered align-middle">
         <thead class="thead-light">
@@ -55,6 +51,10 @@
             @endforelse
         </tbody>
     </table>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        {{ $users->links() }}
     </div>
 </div>
 

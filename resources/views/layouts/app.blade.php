@@ -10,7 +10,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">{{ config('app.name', 'Laravel') }}</a>
+            <a class="navbar-brand" href="{{ url('/dashboard') }}">Dashboard</a>
             <div class="navbar-nav ms-auto">
                 @guest
                     <a class="nav-link" href="{{ route('login') }}">Login</a>
