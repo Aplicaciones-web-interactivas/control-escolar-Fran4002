@@ -14,6 +14,25 @@ class AdminController extends Controller
         return view('admin.dashboard');
     }
 
+    public function indexUsers()
+    {
+        $roles = ['user', 'alumno', 'maestro'];
+        $users = User::all();
+
+        return view('admin.users', compact('users', 'roles'));
+    }
+
+    public function updateUserRole(Request $request, User $user)
+    {
+        $request->validate([
+            'role' => 'required|in:user,alumno,maestro',
+        ]);
+
+        $user->update(['role' => $request->role]);
+
+        return redirect()->route('index.users')->with('success', 'Rol de usuario actualizado correctamente');
+    }
+
     public function indexMaterias() {
         $materias = Materia::all();
         return view('admin.materias')->with('materias', $materias);
