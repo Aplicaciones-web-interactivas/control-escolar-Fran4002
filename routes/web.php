@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CalificacionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,6 +17,16 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 route::get('/dashboard', [AdminController::class, 'indexAdmin'])->middleware('auth')->name('index.dashboard');
+
+Route::get('/alumnos', function () {
+    abort_if(auth()->user()->role !== 'alumno', 403);
+    return view('alumnos');
+})->middleware('auth')->name('alumnos.index');
+
+Route::get('/maestros', function () {
+    abort_if(auth()->user()->role !== 'maestro', 403);
+    return view('maestros');
+})->middleware('auth')->name('maestros.index');
 
 Route::get('/usuarios', [AdminController::class, 'indexUsers'])->middleware('auth')->name('index.users');
 Route::put('/usuarios/{user}/role', [AdminController::class, 'updateUserRole'])->middleware('auth')->name('update.users.role');
@@ -37,3 +48,16 @@ Route::post('/grupos', [AdminController::class, 'createGrupo'])->name('create.gr
 Route::get('/grupos/{grupo}/edit', [AdminController::class, 'editGrupo'])->name('edit.grupos');
 Route::put('/grupos/{grupo}', [AdminController::class, 'updateGrupo'])->name('update.grupos');
 Route::delete('/grupos/{grupo}', [AdminController::class, 'deleteGrupo'])->name('delete.grupos');
+
+Route::get('/calificaciones', [CalificacionController::class, 'index'])->name('index.calificaciones');
+Route::post('/calificaciones', [CalificacionController::class, 'store'])->name('create.calificaciones');
+Route::get('/calificaciones/{calificacion}/edit', [CalificacionController::class, 'edit'])->name('edit.calificaciones');
+Route::put('/calificaciones/{calificacion}', [CalificacionController::class, 'update'])->name('update.calificaciones');
+Route::delete('/calificaciones/{calificacion}', [CalificacionController::class, 'destroy'])->name('delete.calificaciones');
+
+// API for calificaciones
+Route::get('/api/calificaciones', [CalificacionController::class, 'apiIndex']);
+Route::get('/api/calificaciones/{calificacion}', [CalificacionController::class, 'apiShow']);
+Route::post('/api/calificaciones', [CalificacionController::class, 'apiStore']);
+Route::put('/api/calificaciones/{calificacion}', [CalificacionController::class, 'apiUpdate']);
+Route::delete('/api/calificaciones/{calificacion}', [CalificacionController::class, 'apiDestroy']);
