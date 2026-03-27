@@ -7,6 +7,7 @@ use App\Models\Horario;
 use App\Models\Grupo;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
@@ -170,8 +171,13 @@ class AdminController extends Controller
     {
         $alumnos = User::where('role', 'alumno')->get();
         $horarios = Horario::with(['materia', 'maestro'])->get();
+        $grupo->load(['horario.materia', 'horario.maestro']);
+        $alumnosInscritos = Grupo::with('alumno')
+            ->where('horario_id', $grupo->horario_id)
+            ->latest('id')
+            ->get();
 
-        return view('admin.grupos_edit', compact('grupo', 'alumnos', 'horarios'));
+        return view('admin.grupos_edit', compact('grupo', 'alumnos', 'horarios', 'alumnosInscritos'));
     }
 
     public function updateGrupo(Request $request, Grupo $grupo)
@@ -194,5 +200,38 @@ class AdminController extends Controller
         $grupo->delete();
 
         return redirect()->route('index.grupos')->with('success', 'Grupo eliminado correctamente');
+    }
+
+    public function addAlumnoToGrupo(Request $request, Grupo $grupo)
+    {
+        $validated = $request->validate([
+            'alumno_id' => [
+                'required',
+                'integer',
+                Rule::exists('users', 'id')->where(function ($query) {
+                    $query->where('role', 'alumno');
+                }),
+            ],
+        ]);
+
+        $yaInscrito = Grupo::where('horario_id', $grupo->horario_id)
+            ->where('alumno_id', $validated['alumno_id'])
+            ->exists();
+
+        if ($yaInscrito) {
+            return redirect()
+                ->route('edit.grupos', $grupo->id)
+                ->withErrors(['alumno_id' => 'El alumno ya está inscrito en este grupo.'])
+                ->withInput();
+        }
+
+        Grupo::create([
+            'alumno_id' => $validated['alumno_id'],
+            'horario_id' => $grupo->horario_id,
+        ]);
+
+        return redirect()
+            ->route('edit.grupos', $grupo->id)
+            ->with('success', 'Alumno agregado al grupo correctamente');
     }
 }
