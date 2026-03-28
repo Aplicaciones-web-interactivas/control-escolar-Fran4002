@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalificacionController;
+use App\Http\Controllers\EntregaTareaController;
+use App\Http\Controllers\TareaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,30 +33,42 @@ Route::get('/maestros', function () {
 Route::get('/usuarios', [AdminController::class, 'indexUsers'])->middleware('auth')->name('index.users');
 Route::put('/usuarios/{user}/role', [AdminController::class, 'updateUserRole'])->middleware('auth')->name('update.users.role');
 
-Route::get('/materias', [AdminController::class, 'indexMaterias'])->name('index.materias');
-Route::post('/materias', [AdminController::class, 'createMateria'])->name('create.materias');
-Route::get('/materias/{materia}/edit', [AdminController::class, 'editMateria'])->name('edit.materias');
-Route::put('/materias/{materia}', [AdminController::class, 'updateMateria'])->name('update.materias');
-Route::delete('/materias/{materia}', [AdminController::class, 'deleteMateria'])->name('delete.materias');
+Route::middleware('auth')->group(function () {
+    Route::get('/materias', [AdminController::class, 'indexMaterias'])->name('index.materias');
+    Route::post('/materias', [AdminController::class, 'createMateria'])->name('create.materias');
+    Route::get('/materias/{materia}/edit', [AdminController::class, 'editMateria'])->name('edit.materias');
+    Route::put('/materias/{materia}', [AdminController::class, 'updateMateria'])->name('update.materias');
+    Route::delete('/materias/{materia}', [AdminController::class, 'deleteMateria'])->name('delete.materias');
 
-Route::get('/horarios', [AdminController::class, 'indexHorarios'])->name('index.horarios');
-Route::post('/horarios', [AdminController::class, 'createHorario'])->name('create.horarios');
-Route::get('/horarios/{horario}/edit', [AdminController::class, 'editHorario'])->name('edit.horarios');
-Route::put('/horarios/{horario}', [AdminController::class, 'updateHorario'])->name('update.horarios');
-Route::delete('/horarios/{horario}', [AdminController::class, 'deleteHorario'])->name('delete.horarios');
+    Route::get('/horarios', [AdminController::class, 'indexHorarios'])->name('index.horarios');
+    Route::post('/horarios', [AdminController::class, 'createHorario'])->name('create.horarios');
+    Route::get('/horarios/{horario}/edit', [AdminController::class, 'editHorario'])->name('edit.horarios');
+    Route::put('/horarios/{horario}', [AdminController::class, 'updateHorario'])->name('update.horarios');
+    Route::delete('/horarios/{horario}', [AdminController::class, 'deleteHorario'])->name('delete.horarios');
 
-Route::get('/grupos', [AdminController::class, 'indexGrupos'])->name('index.grupos');
-Route::post('/grupos', [AdminController::class, 'createGrupo'])->name('create.grupos');
-Route::get('/grupos/{grupo}/edit', [AdminController::class, 'editGrupo'])->name('edit.grupos');
-Route::post('/grupos/{grupo}/alumnos', [AdminController::class, 'addAlumnoToGrupo'])->name('store.grupos.alumnos');
-Route::put('/grupos/{grupo}', [AdminController::class, 'updateGrupo'])->name('update.grupos');
-Route::delete('/grupos/{grupo}', [AdminController::class, 'deleteGrupo'])->name('delete.grupos');
+    Route::get('/grupos', [AdminController::class, 'indexGrupos'])->name('index.grupos');
+    Route::post('/grupos', [AdminController::class, 'createGrupo'])->name('create.grupos');
+    Route::get('/grupos/{grupo}/edit', [AdminController::class, 'editGrupo'])->name('edit.grupos');
+    Route::post('/grupos/{grupo}/alumnos', [AdminController::class, 'addAlumnoToGrupo'])->name('store.grupos.alumnos');
+    Route::put('/grupos/{grupo}', [AdminController::class, 'updateGrupo'])->name('update.grupos');
+    Route::delete('/grupos/{grupo}', [AdminController::class, 'deleteGrupo'])->name('delete.grupos');
 
-Route::get('/calificaciones', [CalificacionController::class, 'index'])->name('index.calificaciones');
-Route::post('/calificaciones', [CalificacionController::class, 'store'])->name('create.calificaciones');
-Route::get('/calificaciones/{calificacion}/edit', [CalificacionController::class, 'edit'])->name('edit.calificaciones');
-Route::put('/calificaciones/{calificacion}', [CalificacionController::class, 'update'])->name('update.calificaciones');
-Route::delete('/calificaciones/{calificacion}', [CalificacionController::class, 'destroy'])->name('delete.calificaciones');
+    Route::get('/calificaciones', [CalificacionController::class, 'index'])->name('index.calificaciones');
+    Route::post('/calificaciones', [CalificacionController::class, 'store'])->name('create.calificaciones');
+    Route::get('/calificaciones/{calificacion}/edit', [CalificacionController::class, 'edit'])->name('edit.calificaciones');
+    Route::put('/calificaciones/{calificacion}', [CalificacionController::class, 'update'])->name('update.calificaciones');
+    Route::delete('/calificaciones/{calificacion}', [CalificacionController::class, 'destroy'])->name('delete.calificaciones');
+
+    Route::get('/maestros/tareas', [TareaController::class, 'maestroIndex'])->name('maestros.tareas.index');
+    Route::get('/maestros/tareas/crear', [TareaController::class, 'maestroCreate'])->name('maestros.tareas.create');
+    Route::post('/maestros/tareas', [TareaController::class, 'maestroStore'])->name('maestros.tareas.store');
+    Route::get('/maestros/tareas/{tarea}', [TareaController::class, 'maestroShow'])->name('maestros.tareas.show');
+    Route::get('/maestros/entregas/{entrega}/download', [EntregaTareaController::class, 'downloadComoMaestro'])->name('maestros.entregas.download');
+
+    Route::get('/alumnos/tareas', [TareaController::class, 'alumnoIndex'])->name('alumnos.tareas.index');
+    Route::post('/alumnos/tareas/{tarea}/entrega', [EntregaTareaController::class, 'storeOrUpdate'])->name('alumnos.tareas.entrega.store');
+    Route::get('/alumnos/tareas/{tarea}/entrega/download', [EntregaTareaController::class, 'downloadPropia'])->name('alumnos.tareas.entrega.download');
+});
 
 // API for calificaciones
 Route::get('/api/calificaciones', [CalificacionController::class, 'apiIndex']);

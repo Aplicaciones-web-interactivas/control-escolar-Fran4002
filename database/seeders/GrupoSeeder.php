@@ -17,6 +17,17 @@ class GrupoSeeder extends Seeder
     {
         $alumnoIds = DB::table('users')->where('role', 'alumno')->pluck('id');
         $horarioIds = DB::table('horarios')->pluck('id');
+        $maestroPruebaId = DB::table('users')
+            ->where('role', 'maestro')
+            ->where('name', 'Maestro de Prueba')
+            ->value('id');
+        $usuarioPruebaId = DB::table('users')
+            ->where('role', 'alumno')
+            ->whereIn('name', ['Usuario de Prueba', 'Usuario de prueba', 'Alumno de Prueba'])
+            ->value('id');
+        $horariosMaestroPrueba = $maestroPruebaId
+            ? DB::table('horarios')->where('maestro_id', $maestroPruebaId)->pluck('id')
+            : collect();
 
         if ($alumnoIds->isEmpty() || $horarioIds->isEmpty()) {
             return;
@@ -27,7 +38,32 @@ class GrupoSeeder extends Seeder
 
         foreach ($alumnoIds as $alumnoId) {
             $cantidadAsignaciones = min(2, $horarioIds->count());
-            $asignaciones = $horarioIds->random($cantidadAsignaciones);
+            $asignaciones = $cantidadAsignaciones === 1
+                ? collect([$horarioIds->random()])
+                : $horarioIds->random($cantidadAsignaciones);
+
+            if (
+                $usuarioPruebaId &&
+                $alumnoId === $usuarioPruebaId &&
+                $horariosMaestroPrueba->isNotEmpty()
+            ) {
+                $horarioMaestroPruebaId = $horariosMaestroPrueba->first();
+                $asignaciones = collect([$horarioMaestroPruebaId]);
+
+                if ($cantidadAsignaciones > 1) {
+                    $horariosRestantes = $horarioIds
+                        ->reject(fn ($horarioId) => $horarioId === $horarioMaestroPruebaId)
+                        ->values();
+
+                    if ($horariosRestantes->isNotEmpty()) {
+                        $faltantes = min($cantidadAsignaciones - 1, $horariosRestantes->count());
+                        $asignacionesExtra = $faltantes === 1
+                            ? collect([$horariosRestantes->random()])
+                            : $horariosRestantes->random($faltantes);
+                        $asignaciones = $asignaciones->merge($asignacionesExtra);
+                    }
+                }
+            }
 
             foreach ($asignaciones as $horarioId) {
                 $rows[] = [

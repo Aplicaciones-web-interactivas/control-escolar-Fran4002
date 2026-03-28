@@ -17,9 +17,8 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Alumno</th>
-                <th>Materia</th>
                 <th>Maestro</th>
+                <th>Materia</th>
                 <th>Horario</th>
                 <th>Acciones</th>
             </tr>
@@ -27,12 +26,11 @@
         <tbody>
             @forelse ($grupos as $grupo)
                 <tr>
-                    <td>{{ $grupo->alumno->name ?? 'N/A' }}</td>
-                    <td>{{ $grupo->horario->materia->nombre ?? 'N/A' }}</td>
                     <td>{{ $grupo->horario->maestro->name ?? 'N/A' }}</td>
+                    <td>{{ $grupo->horario->materia->nombre ?? 'N/A' }}</td>                    
                     <td>{{ $grupo->horario->dias }} {{ $grupo->horario->hora_inicio }}-{{ $grupo->horario->hora_fin }}</td>
                     <td>
-                        <a href="{{ route('edit.grupos', $grupo->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                        <a href="{{ route('edit.grupos', $grupo->id) }}" class="btn btn-sm btn-warning">Ver grupo</a>
                         <form action="{{ route('delete.grupos', $grupo->id) }}" method="post" style="display:inline">
                             @csrf
                             @method('DELETE')
