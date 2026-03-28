@@ -25,7 +25,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'clave_institucional' => fake()->unique()->bothify('CI-#####'),
+            'clave_institucional' => fake()->unique()->bothify('30###'),
             'password' => static::$password ??= Hash::make('password'),
             'role' => 'alumno',
             'is_active' => true,

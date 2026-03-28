@@ -16,7 +16,7 @@ class MaestroSeeder extends Seeder
     public function run(): void
     {
         // Create a few sample maestro.
-        User::factory(5)->create([
+        User::factory(10)->create([
             'role' => 'maestro',
         ]);
 
