@@ -17,6 +17,10 @@ class HorarioSeeder extends Seeder
     {
         $maestroIds = DB::table('users')->where('role', 'maestro')->pluck('id');
         $materiaIds = DB::table('materias')->pluck('id');
+        $maestroPruebaId = DB::table('users')
+            ->where('role', 'maestro')
+            ->where('name', 'Maestro de Prueba')
+            ->value('id');
 
         if ($maestroIds->isEmpty() || $materiaIds->isEmpty()) {
             return;
@@ -43,6 +47,20 @@ class HorarioSeeder extends Seeder
                 'dias' => $bloque['dias'],
                 'hora_inicio' => $bloque['hora_inicio'],
                 'hora_fin' => $bloque['hora_fin'],
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+
+        $maestroAsignados = collect($rows)->pluck('maestro_id');
+        if ($maestroPruebaId && !$maestroAsignados->contains($maestroPruebaId)) {
+            $bloqueExtra = $bloques[0];
+            $rows[] = [
+                'maestro_id' => $maestroPruebaId,
+                'materia_id' => $materiaIds->first(),
+                'dias' => $bloqueExtra['dias'],
+                'hora_inicio' => $bloqueExtra['hora_inicio'],
+                'hora_fin' => $bloqueExtra['hora_fin'],
                 'created_at' => $now,
                 'updated_at' => $now,
             ];
