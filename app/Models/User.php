@@ -35,4 +35,14 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function tareasCreadas()
+    {
+        return $this->hasMany(Tarea::class, 'maestro_id');
+    }
+
+    public function entregasTareas()
+    {
+        return $this->hasMany(EntregaTarea::class, 'alumno_id');
+    }
+
 }
